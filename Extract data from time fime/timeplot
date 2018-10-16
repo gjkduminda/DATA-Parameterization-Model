@@ -1,0 +1,151 @@
+#!/bin/tcsh
+#set echo
+set field = '$2'
+set prec = '%.6e'
+set fmt = ''
+set notime = 0
+while ($#argv) 
+    switch ($argv[1])
+    case -notime:
+        set field = '""'
+        set notime = 1
+        breaksw
+    case -p:
+        shift
+        set prec = '%.'$argv[1]'e'
+        breaksw
+    case step:
+        set field = ( $field:q, '$1' )
+        set fmt = ( $fmt:q '%d' )
+        breaksw
+ 	case ftop:
+		set field = ( $field:q, '$3' )
+        set fmt = ( $fmt:q $prec:q )
+		breaksw
+	case fbot:
+		set field = ( $field:q, '$4' )
+        set fmt = ( $fmt:q $prec:q )
+		breaksw
+ 	case tmin:
+		set field = ( $field:q, '$5' )
+        set fmt = ( $fmt:q $prec:q )
+		breaksw
+	case tmean:
+		set field = ( $field:q, '$6' )
+        set fmt = ( $fmt:q $prec:q )
+		breaksw
+ 	case tmax:
+		set field = ( $field:q, '$7' )
+        set fmt = ( $fmt:q $prec:q )
+		breaksw
+ 	case vmin:
+		set field = ( $field:q, '$8' )
+        set fmt = ( $fmt:q $prec:q )
+		breaksw
+	case vrms:
+		set field = ( $field:q, '$9' )
+        set fmt = ( $fmt:q $prec:q )
+		breaksw
+ 	case vmax:
+		set field = ( $field:q, '$10' )
+        set fmt = ( $fmt:q $prec:q )
+		breaksw
+ 	case etamin:
+		set field = ( $field:q, '$11' )
+        set fmt = ( $fmt:q $prec:q )
+		breaksw
+	case etamean:
+		set field = ( $field:q, '$12' )
+        set fmt = ( $fmt:q $prec:q )
+		breaksw
+ 	case etamax:
+		set field = ( $field:q, '$13' )
+        set fmt = ( $fmt:q $prec:q )
+		breaksw
+ 	case ra:
+		set field = ( $field:q, '$14' )
+        set fmt = ( $fmt:q $prec:q )
+		breaksw
+	case nutop:
+		set field = ( $field:q, '$15' )
+        set fmt = ( $fmt:q $prec:q )
+		breaksw
+ 	case nubot:
+		set field = ( $field:q, '$16' )
+        set fmt = ( $fmt:q $prec:q )
+		breaksw
+ 	case cmin:
+		set field = ( $field:q, '$17' )
+        set fmt = ( $fmt:q $prec:q )
+		breaksw
+	case cmean:
+		set field = ( $field:q, '$18' )
+        set fmt = ( $fmt:q $prec:q )
+		breaksw
+ 	case cmax:
+		set field = ( $field:q, '$19' )
+        set fmt = ( $fmt:q $prec:q )
+		breaksw
+	case fmean:
+		set field = ( $field:q, '$20' )
+        set fmt = ( $fmt:q $prec:q )
+		breaksw
+ 	case fmax:
+		set field = ( $field:q, '$21' )
+        set fmt = ( $fmt:q $prec:q )
+		breaksw
+	case erupt:
+		set field = ( $field:q, '$22' )
+        set fmt = ( $fmt:q $prec:q )
+		breaksw
+ 	case erupta:
+        set field = ( $field:q, '$23' )
+        set fmt = ( $fmt:q $prec:q )
+		breaksw
+    case eruptheat:
+        set field = ( $field:q, '$24' )
+        set fmt = ( $fmt:q $prec:q )
+        breaksw
+ 	case ee:
+		set field = ( $field:q, '$25' )
+        set fmt = ( $fmt:q $prec:q )
+		breaksw
+    case masserr:
+        set field = ( $field:q, '$26' )
+        set fmt = ( $fmt:q $prec:q )
+        breaksw
+    case intheat:
+        set field = ( $field:q, '$27' )
+        set fmt = ( $fmt:q $prec:q )
+        breaksw
+    case co2flux:
+        set field = ( $field:q, '$28' )
+        set fmt = ( $fmt:q $prec:q )
+        breaksw
+	case co2mantle:
+		set field = ( $field:q, '$29' )
+        set fmt = ( $fmt:q $prec:q )
+		breaksw
+	case co2atm:
+		set field = ( $field:q, '$30' )
+        set fmt = ( $fmt:q $prec:q )
+		breaksw
+    case tsurf:
+        set field = ( $field:q, '$31' )
+        set fmt = ( $fmt:q $prec:q )
+        breaksw
+    case topT_val:
+        set field = ( $field:q, '$31' )
+        set fmt = ( $fmt:q $prec:q )
+        breaksw
+    endsw
+    shift
+end
+
+if ($notime) then
+    set fmt = ( \"%s$fmt:q\\n\" )
+else
+    set fmt = ( \"$prec:q $fmt:q\\n\" )
+endif
+
+awk -v OFMT=$prec:q '(NR>1) {if ((($1==0)||($1=="istep"))&&NR>2) {print "&"}} ($1!="istep") {printf '"$fmt"', '"$field"'}' $argv
